@@ -48,7 +48,7 @@ metadata:
     app: solr-app
 spec:
   ports:
-  - port: 32080
+  - port: 8983
   clusterIP: None
   selector:
     app: solr-app
@@ -56,16 +56,15 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: solr
+  name: solr-cs
+  labels:
+    app: solr-app
 spec:
   ports:
-  - port: 32080
-    targetPort: 8983
-    nodePort: 32080
-    protocol: TCP
+  - port: 8983
+    name: client
   selector:
     app: solr-app
-  type: NodePort
 ---
 apiVersion: policy/v1beta1
 kind: PodDisruptionBudget
