@@ -6,7 +6,7 @@ metadata:
     app: solr-app
 data:
   solrHome: "/store/data"
-  solrPort: "32080"
+  solrPort: "8983"
   zkHost: "zk-0.zk-hs.default.svc.cluster.local,zk-1.zk-hs.default.svc.cluster.local,zk-2.zk-hs.default.svc.cluster.local"
   solrLogsDir: "/store/logs"
 ---
@@ -23,7 +23,7 @@ data:
         <!--Hello World-->
         <solrcloud>
             <str name="host">${host:}</str>
-            <int name="hostPort">${jetty.port:32080}</int>
+            <int name="hostPort">${jetty.port:8983}</int>
             <str name="hostContext">${hostContext:solr}</str>
 
             <bool name="genericCoreNodeNames">${genericCoreNodeNames:true}</bool>
@@ -60,7 +60,7 @@ metadata:
 spec:
   ports:
   - port: 32080
-    targetPort: 32080
+    targetPort: 8983
     nodePort: 32080
     protocol: TCP
   selector:
@@ -124,7 +124,7 @@ spec:
           mountPath: /store
         ports:
         - name: solr-port
-          containerPort: 32080
+          containerPort: 8983
         env:
           - name: "SOLR_JAVA_MEM"
             value: "-Xms256m -Xmx512m"
@@ -160,14 +160,14 @@ spec:
             httpGet:
               scheme: "HTTP"
               path: /solr/admin/info/system
-              port: 32080
+              port: 8983
         readinessProbe:
           initialDelaySeconds: 15
           periodSeconds: 5
           httpGet:
             scheme: "HTTP"
             path: /solr/admin/info/system
-            port: 32080
+            port: 8983
       initContainers:
       - name: init-solr-data
         image: busybox
