@@ -65,7 +65,7 @@ spec:
     spec:
       containers:
       - name: es-hq
-        image: elastichq/elasticsearch-hq:release-v3.4.0
+        image: elastichq/elasticsearch-hq:release-v3.5.0
         env:
         - name: HQ_DEFAULT_URL
           value: http://elasticsearch:9200
@@ -94,3 +94,4 @@ spec:
     port: 80
     targetPort: 5000
     protocol: TCP
+  type: LoadBalancer
