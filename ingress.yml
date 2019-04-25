@@ -1,0 +1,28 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  annotations:
+    kubernetes.io/ingress.class: nginx
+    nginx.ingress.kubernetes.io/ssl-redirect: "false"
+    nginx.org/proxy-connect-timeout: "75s"
+    nginx.org/proxy-read-timeout: "300s"
+    nginx.org/client-max-body-size: "4m"
+    nginx.org/proxy-buffering: "true"
+    nginx.org/proxy-buffers: "8 1024k"
+    nginx.org/proxy-buffer-size: "1024k"
+  name: solr-ui #legacy name
+spec:
+  backend:
+    serviceName: kibana
+    servicePort: 80
+  rules:
+  - http:
+      paths:
+      - path: /solr
+        backend:
+          serviceName: solr-cs
+          servicePort: 8983
+      - path: /
+        backend:
+          serviceName: hq
+          servicePort: 80

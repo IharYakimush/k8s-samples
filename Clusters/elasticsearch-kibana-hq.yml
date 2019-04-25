@@ -1,0 +1,96 @@
+#taken from https://medium.com/devopslinks/https-medium-com-thakur-vaibhav23-ha-es-k8s-7e655c1b7b61
+apiVersion: apps/v1beta1
+kind: Deployment
+metadata:
+  name: es-kibana
+  labels:
+    component: elasticsearch
+    role: kibana
+spec:
+  replicas: 2
+  template:
+    metadata:
+      labels:
+        component: elasticsearch
+        role: kibana
+    spec:
+      containers:
+      - name: es-kibana
+        image: docker.elastic.co/kibana/kibana-oss:6.2.2
+        env:
+        - name: CLUSTER_NAME
+          value: my-es
+        - name: ELASTICSEARCH_URL
+          value: http://elasticsearch:9200
+        resources:
+          limits:
+            cpu: 0.5
+          requests:
+            cpu: 0.1
+        ports:
+        - containerPort: 5601
+          name: http
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: kibana
+  labels:
+    component: elasticsearch
+    role: kibana
+spec:
+  selector:
+    component: elasticsearch
+    role: kibana
+  ports:
+  - name: http
+    port: 80
+    targetPort: 5601
+    protocol: TCP
+---
+apiVersion: apps/v1beta1
+kind: Deployment
+metadata:
+  name: es-hq
+  labels:
+    component: elasticsearch
+    role: hq
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        component: elasticsearch
+        role: hq
+    spec:
+      containers:
+      - name: es-hq
+        image: elastichq/elasticsearch-hq:release-v3.4.0
+        env:
+        - name: HQ_DEFAULT_URL
+          value: http://elasticsearch:9200
+        resources:
+          limits:
+            cpu: 0.5
+          requests:
+            cpu: 0.1
+        ports:
+        - containerPort: 5000
+          name: http
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: hq
+  labels:
+    component: elasticsearch
+    role: hq
+spec:
+  selector:
+    component: elasticsearch
+    role: hq
+  ports:
+  - name: http
+    port: 80
+    targetPort: 5000
+    protocol: TCP

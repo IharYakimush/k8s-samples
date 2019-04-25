@@ -1,0 +1,11 @@
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: funny-nightingale-nginx-ingress-controller
+data:
+  proxy-connect-timeout: "50s"
+  proxy-read-timeout: "50s"
+  client-max-body-size: "2m"
+  proxy-buffer-size: "1024k"
+  proxy_buffers: "8 1024k"
+  proxy-buffering: "true"
