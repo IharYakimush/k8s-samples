@@ -4,13 +4,15 @@ metadata:
   annotations:
     kubernetes.io/ingress.class: nginx
     nginx.ingress.kubernetes.io/ssl-redirect: "false"
-    nginx.org/proxy-connect-timeout: "75s"
-    nginx.org/proxy-read-timeout: "300s"
-    nginx.org/client-max-body-size: "4m"
-    nginx.org/proxy-buffering: "true"
-    nginx.org/proxy-buffers: "8 1024k"
-    nginx.org/proxy-buffer-size: "1024k"
-  name: solr-ui #legacy name
+    nginx.ingress.kubernetes.io/rewrite-target: /$1$2
+    #nginx.org/proxy-connect-timeout: "75s"
+    #nginx.org/proxy-read-timeout: "300s"
+    #nginx.org/client-max-body-size: "4m"
+    nginx.org/proxy-buffering: "off"
+    nginx.org/proxy-buffers: "8 5m"
+    nginx.org/proxy-buffer-size: "5m"
+    nginx.org/proxy_max_temp_file_size: "0"
+  name: demo
 spec:
   backend:
     serviceName: kibana
@@ -18,11 +20,15 @@ spec:
   rules:
   - http:
       paths:
-      - path: /solr
+      - path: /(solr)(\/.*)$
         backend:
           serviceName: solr-cs
-          servicePort: 8983
-      - path: /
+          servicePort: 8983      
+      - path: /es/?(.*)
         backend:
-          serviceName: hq
+          serviceName: elasticsearch
+          servicePort: 9200
+      - path: /?(.*)
+        backend:
+          serviceName: kibana
           servicePort: 80
